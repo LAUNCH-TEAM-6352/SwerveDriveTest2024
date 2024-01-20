@@ -86,14 +86,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopPeriodic()
   {
-    // Drive the robot during teleop
-    double forward = -driverController.getY();
-    double strafe = driverController.getX();
-    double rotation = driverController.getTwist(); // Adjust as needed for your controller
-
-    // Drive with linear speed and rotation
-    Translation2d linearSpeed = new Translation2d(forward, strafe);
-    swerveDrive.drive(linearSpeed, rotation, Constants.isFieldRelative);
+    
   }
 
   @Override
