@@ -7,10 +7,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import swervelib.math.SwerveMath;
 
 public class SwerveDriveSubsystem extends SubsystemBase
@@ -22,11 +25,15 @@ public class SwerveDriveSubsystem extends SubsystemBase
         // Swerve drive initiation according to YAGSL
         try
         {
+            SwerveDriveTelemetry.verbosity=TelemetryVerbosity.HIGH;
             double maximumSpeed = Units.feetToMeters(Constants.maxSpeedMps);
             File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
             double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(Constants.wheelDiameter),Constants.gearRatioDrive);
-            double steeringConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(Constants.gearRatioSteer, Constants.steeringEncoderResolution);
+            SmartDashboard.putNumber("SwerveDriveConversionFactor", driveConversionFactor);
+            double steeringConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(Constants.gearRatioSteer);
+            SmartDashboard.putNumber("SwerveSteeringConversionFactor", steeringConversionFactor);
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed, steeringConversionFactor, driveConversionFactor);
+         
         }
         catch (IOException exception)
         {

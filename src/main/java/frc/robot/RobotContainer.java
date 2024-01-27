@@ -8,24 +8,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.DriveWithGamepad;
 // import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveWithJoystick;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class RobotContainer 
 {
+  SendableChooser<Boolean> driveOrientationChooser = new SendableChooser<>();
   private final SwerveDriveSubsystem swerveDriveSubsystem = new SwerveDriveSubsystem();
-  private final Joystick driverController = new Joystick(0);
+  // private final Joystick joystick = new Joystick(0);
+  private final XboxController gamepad = new XboxController(2);
   
 
   public RobotContainer() throws IOException
   {
     // Configure default command for the swerve drive subsystem
-    swerveDriveSubsystem.setDefaultCommand(new DriveWithJoystick(swerveDriveSubsystem, 
-                                            driverController, Constants.isFieldRelative));
+    swerveDriveSubsystem.setDefaultCommand(new DriveWithGamepad(swerveDriveSubsystem, 
+                                            gamepad, driveOrientationChooser));
     configureBindings();
+    configureSmartDashboard();
 
   }
 
@@ -33,6 +41,14 @@ public class RobotContainer
   {
     return swerveDriveSubsystem;
   }
+
+  private void configureSmartDashboard()
+  {
+    driveOrientationChooser.setDefaultOption("Field Relative", Boolean.TRUE);
+    driveOrientationChooser.addOption("Robot Relative", Boolean.FALSE);
+    SmartDashboard.putData("Drive Orientation", driveOrientationChooser);
+  }
+
 
   private void configureBindings()
   {
@@ -48,4 +64,5 @@ public class RobotContainer
   {
     return Commands.print("No autonomous command configured");
   }
+  
 }

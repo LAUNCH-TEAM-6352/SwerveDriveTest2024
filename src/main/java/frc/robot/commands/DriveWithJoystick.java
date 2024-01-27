@@ -40,8 +40,8 @@ public class DriveWithJoystick extends Command
         joystickRotation = applyDeadbandAndSensitivity(joystickRotation);
 
         // Drives according to linear speed, rotational speed, and if field is relative (true for now)
-        double speedX = joystickX * Constants.maximumLinearVelocityMps;
-        double speedY = joystickY * Constants.maximumLinearVelocityMps;
+        double speedX = joystickY * Constants.maximumLinearVelocityMps;
+        double speedY = -joystickX * Constants.maximumLinearVelocityMps;
         double rotationRate = -joystickRotation * Constants.maximumRotationRateRps;
         Translation2d translationSpeed = new Translation2d(speedX, speedY);
         swerveDriveSubsystem.drive(translationSpeed, rotationRate, Constants.isFieldRelative);
