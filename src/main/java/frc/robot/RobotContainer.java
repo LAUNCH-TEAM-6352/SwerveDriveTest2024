@@ -5,26 +5,29 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import edu.wpi.first.wpilibj.Joystick;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.CameraConstants;
 import frc.robot.commands.DriveWithGamepad;
 // import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.DriveWithJoystick;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class RobotContainer 
 {
   SendableChooser<Boolean> driveOrientationChooser = new SendableChooser<>();
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final SwerveDriveSubsystem swerveDriveSubsystem = new SwerveDriveSubsystem();
   // private final Joystick joystick = new Joystick(0);
   private final XboxController gamepad = new XboxController(2);
+  private final String gameData;
   
 
   public RobotContainer() throws IOException
@@ -34,6 +37,13 @@ public class RobotContainer
                                             gamepad, driveOrientationChooser));
     configureBindings();
     configureSmartDashboard();
+    gameData = DriverStation.getGameSpecificMessage().toLowerCase();
+    SmartDashboard.putString(gameData, gameData);
+    if (gameData.contains("-cam-")|| gameData.isBlank()){
+      var camera = CameraServer.startAutomaticCapture();
+      camera.setFPS(CameraConstants.fps);
+      camera.setResolution(CameraConstants.width, CameraConstants.height);
+    }
 
   }
 
@@ -47,8 +57,12 @@ public class RobotContainer
     driveOrientationChooser.setDefaultOption("Field Relative", Boolean.TRUE);
     driveOrientationChooser.addOption("Robot Relative", Boolean.FALSE);
     SmartDashboard.putData("Drive Orientation", driveOrientationChooser);
-  }
 
+    autoChooser.setDefaultOption("Leave",  new PathPlannerAuto("Leave"));
+    autoChooser.addOption("Return",  new PathPlannerAuto("Return"));
+    SmartDashboard.putData("Auto Selection", autoChooser);
+     
+  }
 
   private void configureBindings()
   {
@@ -62,7 +76,7 @@ public class RobotContainer
 
   public Command getAutonomousCommand()
   {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
   
 }
