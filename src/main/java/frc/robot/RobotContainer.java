@@ -39,11 +39,12 @@ public class RobotContainer
     configureSmartDashboard();
     gameData = DriverStation.getGameSpecificMessage().toLowerCase();
     SmartDashboard.putString(gameData, gameData);
-    if (gameData.contains("-cam-")|| gameData.isBlank()){
-      var camera = CameraServer.startAutomaticCapture();
-      camera.setFPS(CameraConstants.fps);
-      camera.setResolution(CameraConstants.width, CameraConstants.height);
-    }
+    // Commented out to get rid of camera errors during auto testing
+    // if (gameData.contains("-cam-")|| gameData.isBlank()){
+    //   var camera = CameraServer.startAutomaticCapture();
+    //   camera.setFPS(CameraConstants.fps);
+    //   camera.setResolution(CameraConstants.width, CameraConstants.height);
+    // }
 
   }
 
@@ -60,6 +61,8 @@ public class RobotContainer
 
     autoChooser.setDefaultOption("Leave",  new PathPlannerAuto("Leave"));
     autoChooser.addOption("Return",  new PathPlannerAuto("Return"));
+    autoChooser.addOption("DuelTest",  new PathPlannerAuto("LeaveandReturn"));
+
     SmartDashboard.putData("Auto Selection", autoChooser);
      
   }

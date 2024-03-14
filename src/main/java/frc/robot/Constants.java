@@ -6,7 +6,7 @@ public final class Constants
 {
     public static double wheelDiameter = 4;
     public static double maximumLinearVelocityMps = 5.0;
-    public static double maximumRotationRateRps = Math.PI;
+    public static double maximumRotationRateRps = 4* Math.PI;
 
     // Don't mess with this!
     public static double maxModuleSpeedMps = 4.5;
